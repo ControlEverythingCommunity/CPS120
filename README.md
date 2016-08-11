@@ -79,4 +79,21 @@ Run the c program.
 ```cpp
 $>./CPS120
 ```
+
+## Onion Omega
+
+Get Started and setting up the Onion Omega according to steps provided at :
+
+https://wiki.onion.io/Get-Started
+
+The Omega supports Python, we recommend installing by following steps :
+
+https://wiki.onion.io/Tutorials/Installing-Python
+
+Download (or git pull) the code in Onion Omega. Run the program.
+
+```cpp
+$> python CPS120.py
+```
+
 #####The code output is digital pressure in kPa.
