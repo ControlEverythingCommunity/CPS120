@@ -86,9 +86,10 @@ Get Started and setting up the Onion Omega according to steps provided at :
 
 https://wiki.onion.io/Get-Started
 
-The Omega supports Python, we recommend installing by following steps :
+To install the Python module, run the following commands:
 
-https://wiki.onion.io/Tutorials/Installing-Python
+opkg update
+opkg install python-light pyOnionI2C
 
 Download (or git pull) the code in Onion Omega. Run the program.
 
