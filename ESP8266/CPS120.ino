@@ -12,8 +12,8 @@
 // CPS120 I2C address is 0x28(40)
 #define Addr 0x28
 
-const char* ssid = "Dcube_web";
-const char* password = "12345670";
+const char* ssid = "Your SSID Network";
+const char* password = "Password";
 float pressure, cTemp, fTemp;
 
 ESP8266WebServer server(80);
