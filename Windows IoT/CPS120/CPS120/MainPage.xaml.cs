@@ -19,8 +19,8 @@ namespace CPS120
 
     public sealed partial class MainPage : Page
     {
-        private const byte PRESTEMP_I2C_ADDR = 0x28;           //	I2C address of the CPS120
-		private const byte PRESTEMP_REG_PRESSURE = 0x00;              //	Pressure data register
+        private const byte PRESTEMP_I2C_ADDR = 0x28;           // I2C address of the CPS120
+	private const byte PRESTEMP_REG_PRESSURE = 0x00;       // Pressure data register
 
 
         private I2cDevice I2CPrestemp;
@@ -30,17 +30,17 @@ namespace CPS120
         {
             this.InitializeComponent();
 
-            //	Register for the unloaded event so we can clean up upon exit
+            // Register for the unloaded event so we can clean up upon exit
             Unloaded += MainPage_Unloaded;
 
-            //	Initialize the I2C bus, Pressure and Temperature Sensor, and timer
+            // Initialize the I2C bus, Pressure and Temperature Sensor, and timer
             InitI2CPrestemp();
         }
 
         private async void InitI2CPrestemp()
         {
-            string aqs = I2cDevice.GetDeviceSelector();             //	Get a selector string that will return all I2C controllers on the system
-            var dis = await DeviceInformation.FindAllAsync(aqs);    //	Find the I2C bus controller device with our selector string
+            string aqs = I2cDevice.GetDeviceSelector();             // Get a selector string that will return all I2C controllers on the system
+            var dis = await DeviceInformation.FindAllAsync(aqs);    // Find the I2C bus controller device with our selector string
             if (dis.Count == 0)
             {
                 Text_Status.Text = "No I2C controllers were found on the system";
@@ -61,13 +61,13 @@ namespace CPS120
             }
 
             /*
-				Initialize the Pressure and Temperature Sensor
-				For this device, we create 1-byte write buffer
-				The byte is the content that we want to write to
-			*/
-            byte[] WriteBuf_StartByte = new byte[] { 0x80 };          //	0x80 Send start command
+		Initialize the Pressure and Temperature Sensor
+		For this device, we create 1-byte write buffer
+		The byte is the content that we want to write to
+	    */
+            byte[] WriteBuf_StartByte = new byte[] { 0x80 };          // 0x80 Send start command
 
-            //	Write the register settings
+            // Write the register settings
             try
             {
                 I2CPrestemp.Write(WriteBuf_StartByte);
@@ -79,13 +79,13 @@ namespace CPS120
                 return;
             }
 
-            //	Create a timer to read data every 100ms
+            // Create a timer to read data every 100ms
             periodicTimer = new Timer(this.TimerCallback, null, 0, 100);
         }
 
         private void MainPage_Unloaded(object sender, object args)
         {
-            //	Cleanup
+            // Cleanup
             I2CPrestemp.Dispose();
         }
 
@@ -94,7 +94,7 @@ namespace CPS120
             string pText, cText, fText;
             string addressText, statusText;
 
-            //	Read and format Pressure and Temperature data
+            // Read and format Pressure and Temperature data
             try
             {
                 PressTemp PRESTEMP = ReadI2CPrestemp();
@@ -112,7 +112,7 @@ namespace CPS120
                 statusText = "Failed to read from Pressure and Temperature Sensor: " + ex.Message;
             }
 
-            //	UI updates must be invoked on the UI thread
+            // UI updates must be invoked on the UI thread
             var task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 Text_Digital_Pressure.Text = pText;
@@ -124,17 +124,16 @@ namespace CPS120
 
         private PressTemp ReadI2CPrestemp()
         {
-            byte[] RegAddrBuf = new byte[] { PRESTEMP_REG_PRESSURE };     //	Read data from the register address
-            byte[] ReadBuf = new byte[4];                       //	We read 4 bytes sequentially to get all 2 two-byte pressure and temperature registers in one read
+            byte[] RegAddrBuf = new byte[] { PRESTEMP_REG_PRESSURE };   // Read data from the register address
+            byte[] ReadBuf = new byte[4];                       	// We read 4 bytes sequentially to get all 2 two-byte pressure and temperature registers in one read
 
             /*
-				Read from the Pressure and Temperature Sensor 
-				We call WriteRead() so we first write the address of the Digital Pressure I2C register, then read Temperature data
-				register
-			*/
+		Read from the Pressure and Temperature Sensor 
+		We call WriteRead() so we first write the address of the Digital Pressure I2C register, then read Temperature data register
+	    */
             I2CPrestemp.WriteRead(RegAddrBuf, ReadBuf);
 
-			// In order to get the raw 16-bit data values, we need to concatenate two 8-bit bytes from the I2C read.
+	    // In order to get the raw 16-bit data values, we need to concatenate two 8-bit bytes from the I2C read.
 
             ushort PRESTEMPRawP = (ushort)((ReadBuf[0] & 0x3F) * 256);
             PRESTEMPRawP |= (ushort)(ReadBuf[1] & 0xFF);
