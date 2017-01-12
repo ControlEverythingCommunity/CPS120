@@ -42,7 +42,7 @@ void loop()
       Wire.endTransmission();
     
       // Convert the data to 14 bits
-      float pressure = ((((data[0] & 0x3F) * 265 + data[1]) / 16384.0 ) * 90.0 ) + 30.0 ;
+      float pressure = ((((data[0] & 0x3F) * 256 + data[1]) / 16384.0 ) * 90.0 ) + 30.0 ;
       float cTemp = ((((data[2] * 256) + (data[3] & 0xFC)) / 4.0 ) * (165.0 / 16384.0)) - 40.0;
       float fTemp = cTemp * 1.8 + 32;
        
